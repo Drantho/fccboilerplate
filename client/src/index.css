@@ -1,5 +1,49 @@
-body {
-  margin: 0;
-  padding: 0;
-  font-family: sans-serif;
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+
+.mint{
+    width: 100%
+}
+
+.mintIt{
+    width: 35px;
+    margin: 0px;
+}
+
+.iconButtons{
+}
+
+.userInfo{
+    display: inline-block;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    margin: 0px;
+}
+
+.pageTitle{
+    font-size: 20pt !important;
+    text-align: center;
+    color: rgba(0,0,0,0.87);
+    padding-top: 15px;
+}
+
+.customPaper{
+    box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12);
+    padding: 25px;
+    margin: 15px auto 15px auto;
+    display: inline-block;
+}
+
+.buttonAppBarLink{
+    text-decoration: none !important;
+}
+
+.subContainer{
+    width: 600px;
+    padding-top: 15px;
+    padding-bottom: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+    margin-left: auto;
+    margin-right: auto;
 }
