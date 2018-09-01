@@ -78,34 +78,29 @@ class Mint extends React.Component {
                     >
                       <MoreVertIcon />
                     </IconButton>
-                  </CardActions>
-                        
-                        <Menu
-                            id="menu-appbar"
-                            anchorEl={anchorEl}
-                            anchorOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            open={open}
-                            onClose={this.handleClose}
-                        >
-                        <MenuItem onClick={this.handleClose}>Mint It!</MenuItem>
+                </CardActions>
+                  
+                <Menu
+                    id="menu-appbar"
+                    anchorEl={anchorEl}
+                    anchorOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                    }}
+                    transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                    }}
+                    open={open}
+                    onClose={this.handleClose}
+                >
+                    <MenuItem onClick={this.handleClose}>Mint It!</MenuItem>
                         <Link to={'/ViewMint/' + this.props.mintId}><MenuItem >View Mint</MenuItem></Link>
                         <Link to={'/User/' + this.props.owner}><MenuItem >View User</MenuItem></Link>
                         <MenuItem onClick={this.handleClose}>Not Interested</MenuItem>
                         <MenuItem onClick={this.handleClose}>Report Spam</MenuItem>
                         <MenuItem onClick={this.handleClose}>Report Inappropriate</MenuItem>
                     </Menu>
-
-
-
-
-
 
                 </Card>
             </div>

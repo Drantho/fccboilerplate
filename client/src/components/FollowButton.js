@@ -1,0 +1,18 @@
+import React from 'react';
+import Button from '@material-ui/core/Button';
+
+const FollowButton = (props) => (
+    <Button 
+        variant="extendedFab" 
+        color="secondary" 
+        style={{margin: 10}}
+        onClick={props.handleFollowButton}
+        disabled={props.disabled}
+        >
+
+        Follow
+
+    </Button>
+);
+
+export default FollowButton;

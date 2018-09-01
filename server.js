@@ -73,17 +73,33 @@ app.get('/api/getUser', (req, res) => {
     });
 });
 
+app.post('/api/getUser', (req, res) => {
+    console.log('getUser fires');
+    console.log(req.user);
+    console.log('-----------------------------')
+    if (req.user) {
+        try{
+            res.json(req.user);
+            console.log('res.json success')
+            return;
+        }
+        catch(err){
+            console.log('res.json error');
+            res.sendStatus(200);
+        }
+        
+    }
+
+    res.json({
+        isSignedUp: false
+    });
+});
+
 app.post('/api/SearchUser', (req, res) => {
 
     console.log(req.body);
 
-    User.findOne({
-        $or: [{
-            '_id': req.body.user
-        }, {
-            'local.userName.userName': req.body.user
-        }]
-    }, (err, data) => {
+    User.findById(req.body.user, (err, data) => {
         if (err) {
             console.log(err);
             res.json(err);
@@ -92,6 +108,115 @@ app.post('/api/SearchUser', (req, res) => {
         console.log(data);
         res.json(data);
     });
+
+});
+
+//========================================================================================================================
+
+app.post('/api/FollowUser', (req, res) => { 
+    
+    console.log('/api/followUser() fires.');
+    var newUser = new User();
+
+    User.findById(req.body.userId, (errFinding, userToFollow) =>{
+        if(errFinding)
+        {
+            console.log(errFinding);
+        }
+
+        console.log('userToFollow: ');
+        console.log(userToFollow);
+
+        User.findByIdAndUpdate(req.user._id, {
+            $push: {
+                following: userToFollow
+            }
+        }, {
+            safe: true
+        }, (errPushing, result) => {
+            if (errPushing) {
+                console.log(errPushing);
+                res.json({
+                    message: errPushing
+                });
+            }
+
+            //Add signed in user to follower list
+            User.findByIdAndUpdate(req.body.userId, {$push:{followers: req.user}}, (errAddFollower, addFollowerResult) => {
+                if(errAddFollower){
+                    console.log(errAddFollower);
+                }
+
+
+                console.log('User followed successfully');
+                res.json({
+                    message: 'User followed successfully'
+                });
+
+            });
+            
+        });
+        
+    });
+
+});
+
+app.post('/api/UnFollowUser', (req, res) => { 
+    
+    var newUser = new User();
+
+    User.findById(req.user._id, (errFinding, user) =>{
+        if(errFinding)
+        {
+            console.log(errFinding);
+        }
+
+        for(let i=0;i<user.following.length; i++){
+            if(user.following[i]._id.toString() == req.body.userId.toString()){
+                user.following.splice(i, 1);
+            }
+        }
+
+        User.findByIdAndUpdate(req.user._id, {following: user.following}, (errUpdating, result) => {
+            if(errUpdating){
+                console.log(err);
+            }
+
+            console.log('Following list updated.');
+
+            //Remove signed in user from follower list
+            User.findById(req.body.userId, (errFindingFollowUser, followUser) =>{
+                if(errFindingFollowUser){
+                    console.log(errFindingFollowUser);
+                }
+
+                console.log('Follower found.');
+                for(let i=0; i<followUser.followers.length; i++){
+                    if(followUser.followers[i]._id.toString() == req.user._id.toString()){
+                        followUser.followers.splice(i, 1);
+                        console.log('Follower list altered.');
+                    }
+                }
+
+                User.findByIdAndUpdate(req.body.userId, {followers: followUser.followers}, (errUpdateFollowUser, updateFollowUser) =>{
+                    if(errUpdateFollowUser){
+                        console.log(errUpdateFollowUser);
+                    }
+
+                    console.log('Follower list updated.');
+                    res.json({
+                        followers: followUser.followers
+                    });
+                })
+
+            })
+
+            
+        });
+        
+    });
+
+    
 
 });
 
@@ -121,8 +246,6 @@ app.get('/api/SignInFail', (req, res) => {
 //================================================================================================================================
 
 const ObjectId = require('mongodb').ObjectID;
-
-//module.exports = (app) => {
 
 app.post('/api/AddMint', (req, res) => {
 
@@ -387,6 +510,28 @@ app.get('/api/SignUpFail', (req, res) => {
 
 //========================================================================================================
 
+app.post('/api/ChangeShowMints', (req, res) => {
+    console.log('user: ' + req.user._id);
+    User.findByIdAndUpdate(req.user._id, {
+        $set: {
+            'showMints': req.body.showMints
+        }
+    }, (err, result) => {
+        if (err) {
+            console.log(er);
+            res.json({
+                message: err
+            });
+        }
+
+        console.log('update successful showMints set to ' + req.body.showMints);
+        res.json({
+            message: 'update successful showMints set to ' + req.body.showMints
+        });
+    });
+});
+
+//============================================================================================
 
 if (process.env.NODE_ENV === 'production') {
     // Serve any static files
@@ -400,3 +545,5 @@ if (process.env.NODE_ENV === 'production') {
 
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
+
+

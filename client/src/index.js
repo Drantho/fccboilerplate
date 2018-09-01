@@ -11,19 +11,20 @@ import SignUp from './components/SignUp';
 import SignIn from './components/SignIn';
 import Profile from './components/Profile';
 import './index.css';
+import History from './components/History';
 
 render((
-  <Router>
-    <App>
-      <Switch>
-        <Route exact path="/" component={Home}/>
-        <Route path="/User/:uid" component={User}/>
-        <Route path="/NewMint" component={NewMint}/>
-        <Route path="/ViewMint/:mintId" component={ViewMint}/>
-        <Route path="/SignUp" component={SignUp}/>
-        <Route path="/SignIn" component={SignIn}/>
-        <Route path="/Profile" component={Profile}/>
-      </Switch>
-    </App>
-  </Router>
+    <Router forceRefresh={true}>
+        <App>
+            <Switch>
+                <Route exact path="/" component={Home}/>
+                <Route exact path="/User/:uid" component={User}/>
+                <Route exact path="/NewMint" component={NewMint}/>
+                <Route exact path="/ViewMint/:mintId" component={ViewMint}/>
+                <Route exact path="/SignUp" component={SignUp}/>
+                <Route exact path="/SignIn" component={SignIn}/>
+                <Route exact path="/Profile" component={Profile}/>
+            </Switch>
+        </App>
+    </Router>
 ), document.getElementById('app'));

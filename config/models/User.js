@@ -31,7 +31,9 @@ var userSchema = mongoose.Schema({
             public   : Boolean 
         },
         
-    }
+    },
+    following        : Array,
+    followers        : Array    
 }, { collection : 'MinterestUser' });
 
 // methods ======================
