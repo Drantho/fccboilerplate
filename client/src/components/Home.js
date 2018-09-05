@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import Masonry from 'react-masonry-component';
-import Mint from './Mint';
+import MintList from './MintList';
+import { withRouter } from 'react-router-dom';
 
 const styles = theme => ({
   galleryClass: {
@@ -17,47 +17,18 @@ const styles = theme => ({
   }
 });
 
-const images=[
-  {
-    imageID: 1, src: '../assets/img/1.jpg'
-  },
-  {
-    imageID: 2, src: '../assets/img/2.jpg'
-  },
-  {
-    imageID: 3, src: '../assets/img/3.jpg'
-  },
-  {
-    imageID: 4, src: '../assets/img/4.jpg'
-  },
-  {
-    imageID: 5, src: '../assets/img/5.jpg'
-  },
-  {
-    imageID: 6, src: '../assets/img/6.jpg'
-  },
-  {
-    imageID: 7, src: '../assets/img/7.jpg'
-  },
-  {
-    imageID: 8, src: '../assets/img/8.jpg'
-  },
-  {
-    imageID: 9, src: '../assets/img/9.jpg'
-  },
-];
-
 class Home extends React.Component {
 
     constructor(){
         super();
 
         this.state = {
-            Mints: []
+            Mints: [],
+            signedInUser: {}
         };
   }
     
-    componentDidMount(){
+    componentWillMount(){
         fetch('/api/GetAllMints/', 
         {
             method: 'POST',
@@ -69,27 +40,36 @@ class Home extends React.Component {
         }).then(function(response) {
             return response.json();
         }).then(function(data) {
-            console.log(data[0].Mints);
-            this.setState({Mints: data[0].Mints});
+            
+
+            fetch('/api/GetUser/', 
+            {
+                method: 'POST',
+                headers: 
+                {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            }).then(function(response) {
+                return response.json();
+            }).then(function(data2) {
+
+                this.setState({Mints: data[0].Mints, signedInUser: data2});      
+                console.log('Home state: ');
+                console.log(this.state);
+                console.log('===========================================')          
+
+            }.bind(this));
+
         }.bind(this));
+
     }
     
 
     render() {
 
         return (
-          <Masonry
-            className={'galleryClass'} // default '' 
-            disableImagesLoaded={false} // default false
-            updateOnEachImageLoad={false} // default false and works only if disableImagesLoaded is false
-        >
-        
-        {
-          this.state.Mints.map(function(item, i){            
-            return <Mint key={i} src={item.src} owner={item.owner} mintId={item._id}/>
-          })
-        }
-        </Masonry>
+          <MintList Mints={this.state.Mints} signedInUser={this.state.signedInUser}/>
         );
     }
 }
@@ -98,4 +78,4 @@ Home.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(Home);
+export default withRouter(withStyles(styles)(Home));

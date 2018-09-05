@@ -6,7 +6,6 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import { withRouter } from 'react-router-dom';
-import {BrowserRouter as Router, Route} from 'react-router-dom';
 
 const styles = theme => ({
     root: {
@@ -36,8 +35,6 @@ const styles = theme => ({
     }
 });
 
-
-
 class SignIn extends React.Component {
     constructor(){
         super();
@@ -45,15 +42,14 @@ class SignIn extends React.Component {
             userName: '',
             password: ''
         };
+
         this.handleSignIn = this.handleSignIn.bind(this);
         this.handleUserNameChange = this.handleUserNameChange.bind(this);
         this.handlePasswordChange = this.handlePasswordChange.bind(this);
     }
     
     handleSignIn (event){
-        const self = this;
-        console.log('handleSingIn() fires.');
-        console.log(this.state);
+        const self = this;   
         fetch('/api/SignIn', {
             method: 'POST',
             headers: {
@@ -64,16 +60,10 @@ class SignIn extends React.Component {
             }).then(function(response) {
                 return response.json();
             }).then(function(data) {
-                //console.log(data);
-                //console.log('----------------');
-                //console.log(data.signedUp);
                 if(data.signedUp){
-                    //console.log('sign in success');
                     self.props.history.push('/Profile');
                 }
                 else{
-                    //console.log('attempting to reset form');
-                    //console.log('data' + JSON.stringify(data));
                     self.setState({
                         userName: '',
                         password: '',
@@ -94,6 +84,7 @@ class SignIn extends React.Component {
     }
 
     render() {
+
         const { classes } = this.props;
 
         return (
@@ -134,4 +125,4 @@ SignIn.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(SignIn);
+export default withRouter(withStyles(styles)(SignIn));

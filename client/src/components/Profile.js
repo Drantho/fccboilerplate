@@ -7,8 +7,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import UserListItem from './UserListItem';
-import Masonry from 'react-masonry-component';
-import Mint from './Mint';
+import MintList from './MintList';
 import Avatar from '@material-ui/core/Avatar';
 import FormLabel from '@material-ui/core/FormLabel';
 import FormControl from '@material-ui/core/FormControl';
@@ -16,6 +15,7 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Paper from '@material-ui/core/Paper';
 import Switch from '@material-ui/core/Switch';
+import { withRouter } from 'react-router-dom';
   
 function TabContainer({ children, dir }) {
     return (
@@ -57,6 +57,7 @@ class User extends React.Component {
 
         
         this.state={
+            signedInUser: {},
             userName: '',
             showUserName: false,
             firstName: '',
@@ -102,9 +103,10 @@ class User extends React.Component {
   
     componentDidMount(){
 
-        
-        console.log('PROFILE this.props');
+        console.log('====================================================');
+        console.log('parent signed in user: ');
         console.log(this.props);
+        console.log('====================================================');
 
         fetch('/api/getUser', 
             {
@@ -114,10 +116,6 @@ class User extends React.Component {
                 return response.json();
             }).then(function(data) {
                 if(data.isSignedUp){
-                    console.log('sign in success');
-                    console.log('this');
-                    console.log(this);
-                    console.log('--------------');
                     this.setState({
                         userName: data.local.userName.userName,
                         showUserName: data.local.userName.public,
@@ -133,12 +131,11 @@ class User extends React.Component {
                         Mints: data.Mints,
                         followers: data.followers,
                         following: data.following,
+                        signedInUser: data,
                         value: 0
                     });
                 }
                 else{
-                    //console.log('attempting to reset form');
-                    //console.log('data' + JSON.stringify(data));
                     this.props.history.push('/SignIn');                    
                 }
         }.bind(this));
@@ -296,7 +293,7 @@ class User extends React.Component {
   
                     <h1 className='pageTitle'>{this.state.firstName} {this.state.lastName}</h1>
                     <span style={{width: 40}}>
-                        <Avatar style={{verticalAlign: 'middle', marginRight: 10}} src="../assets/img/user1.jpg" />
+                        <Avatar style={{verticalAlign: 'middle', marginRight: 10}} src="/img/user1.jpg" />
                     </span>
                     <span style={{width: 200}}>
                         <strong>User Name:</strong>{this.state.userName}<br/>          
@@ -336,7 +333,6 @@ class User extends React.Component {
                                     <FormControlLabel
                                         control={
                                             <Switch
-                                                onChange = {this.handleShowFirstNameChange}
                                                 value="firstName"
                                                 onChange={this.handleChangeShowFirstName}
                                                 checked={this.state.showFirstName}
@@ -436,20 +432,7 @@ class User extends React.Component {
                     </TabContainer>
                     <TabContainer dir={theme.direction}>
   
-                        <Masonry
-                            className={'galleryClass'} // default '' 
-                            disableImagesLoaded={false} // default false
-                            updateOnEachImageLoad={false} // default false and works only if disableImagesLoaded is false
-                            style={{marginLeft: -30}}
-                        >
-          
-                            {
-                                this.state.Mints.map(function(item, i){            
-                                    return <Mint key={i} src={item.src} description={item.description}/>
-                                })
-                            }
-            
-                        </Masonry>
+                        <MintList Mints={this.state.Mints} signedInUser={this.state.signedInUser}/>
                     </TabContainer>
                 </SwipeableViews>
             </div>
@@ -462,4 +445,4 @@ User.propTypes = {
     theme: PropTypes.object.isRequired,
 };
   
-export default withStyles(styles, { withTheme: true })(User);
+export default withRouter( withStyles(styles, { withTheme: true })(User));

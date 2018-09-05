@@ -6,7 +6,6 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import { withRouter } from 'react-router-dom';
-import {BrowserRouter as Router, Route} from 'react-router-dom';
 
 const styles = theme => ({
     root: {
@@ -198,4 +197,4 @@ SignUp.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(SignUp);
+export default withRouter(withStyles(styles)(SignUp));

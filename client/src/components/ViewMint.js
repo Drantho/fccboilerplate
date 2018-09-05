@@ -16,6 +16,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Modal from '@material-ui/core/Modal';
 import { ButtonBase } from '../../../node_modules/@material-ui/core';
 import { Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 
 const styles = theme => ({
     galleryClass: {
@@ -41,17 +42,9 @@ const styles = theme => ({
     },
 });
 
-const mint={
-    title: 'Beach Idea',
-    date: '8/1/2018',
-    src: '../assets/img/1.jpg',
-    link: 'http://www.peninsularv.net',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus egestas libero nec justo tincidunt, sit amet condimentum libero rhoncus. Nulla facilisi. Fusce commodo et velit quis consequat. Etiam nec lorem molestie, viverra justo sed, sagittis lorem. In hac habitasse platea dictumst. Duis venenatis, lorem vitae sollicitudin cursus, ipsum justo facilisis justo, quis semper nibh lacus ac erat. Nam viverra urna a ultrices sodales. Nunc in lectus quam. Vivamus viverra justo vehicula turpis pretium, at consectetur neque tristique. Suspendisse cursus nec ante nec pretium. Donec dui quam, sagittis in tellus eu, euismod viverra arcu. Sed faucibus blandit dui, eu pulvinar sem accumsan ac.'
-}
-
 class RecipeReviewCard extends React.Component {
-    constructor(){
-        super();
+    constructor(props){
+        super(props);
         this.state = { 
             anchorEl: null,
             expanded: false,
@@ -67,6 +60,8 @@ class RecipeReviewCard extends React.Component {
     }
 
     componentDidMount(){
+        console.log('viewmint this.props');
+        console.log(this.props);
         console.log('searching mint ' + this.props.match.params.mintId);
         fetch('/api/GetMint', {
             method: 'POST',
@@ -111,7 +106,7 @@ class RecipeReviewCard extends React.Component {
 
     render() {
     const { classes } = this.props;
-    const { auth, anchorEl } = this.state;
+    const { anchorEl } = this.state;
     const open = Boolean(anchorEl);
     
       
@@ -145,12 +140,12 @@ class RecipeReviewCard extends React.Component {
                     subheader={this.state.mint.date}
                 />
                 <ButtonBase onClick={this.handleModalOpen} style={{width: '100%'}}>
-                    <img src={this.state.mint.src} style={{width: '100%'}}/>
+                    <img alt={this.state.mint.title} src={this.state.mint.src} style={{width: '100%'}}/>
                 </ButtonBase>
                 
                 <CardActions className={classes.actions} disableActionSpacing>
                     <IconButton aria-label="Add to favorites">
-                        <img src='../assets/img/leaf.png' style={{height: 20}}/>
+                        <img alt='logo' src='/img/leaf.png' style={{height: 20}}/>
                     </IconButton>
                     <IconButton
                         className={classnames(classes.expand, {
@@ -171,7 +166,7 @@ class RecipeReviewCard extends React.Component {
                     onClose={this.handleModalClose}
                 >
                     <div style={getModalStyle()} className={classes.paper}>
-                        <img src={this.state.mint.src}/>
+                        <img alt='full size' src={this.state.mint.src}/>
                     </div>
                 </Modal>
                 <Menu
@@ -211,4 +206,4 @@ RecipeReviewCard.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(RecipeReviewCard);
+export default withRouter(withStyles(styles)(RecipeReviewCard));

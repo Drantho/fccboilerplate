@@ -30,15 +30,14 @@ class MenuAppBar extends React.Component {
 
     render() {
         const { classes } = this.props;
-        const { auth, anchorEl } = this.state;
-        const open = Boolean(anchorEl);
+        const { auth } = this.state;
 
         return (
             <div className={classes.root}>
                 <AppBar className={classes.appBar} position="fixed">
                     <Toolbar>                        
                         <div >
-                            <img src='/img/logo-white.png' style={{marginLeft: 0, height: 50, paddingTop: 10, paddingBottom: 10}}/>
+                            <img src='/img/logo-white.png' alt='logo' style={{marginLeft: 0, height: 50, paddingTop: 10, paddingBottom: 10}}/>
                         </div>
                         {auth && (
                             <div style={{position: 'absolute', right: 0, marginRight: 25}}>  

@@ -4,7 +4,6 @@ import { withStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
 import Chip from '@material-ui/core/Chip';
 import { Link } from 'react-router-dom';
-import History from './History';
 
 const styles = theme => ({
   root: {
@@ -23,7 +22,7 @@ function UserList(props) {
     <div className={classes.root}>
       <Link to={"/User/" + props.userId} key={Math.random()}>
         <Chip
-          avatar={<Avatar src="../assets/img/users/1.jpg" />}
+          avatar={<Avatar src="/img/users/1.jpg" />}
           label={props.name}
           className={classes.chip}
         />

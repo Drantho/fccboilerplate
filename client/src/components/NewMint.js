@@ -5,6 +5,7 @@ import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
+import { withRouter } from 'react-router-dom';
 
 const styles = theme => ({
     root: {
@@ -140,4 +141,4 @@ NewMint.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(NewMint);
+export default withRouter(withStyles(styles)(NewMint));

@@ -7,172 +7,12 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import UserListItem from './UserListItem';
-import Masonry from 'react-masonry-component';
-import Mint from './Mint';
+import MintList from './MintList';
 import Avatar from '@material-ui/core/Avatar';
 import Paper from '@material-ui/core/Paper';
-import Button from '@material-ui/core/Button';
 import FollowButton from './FollowButton';
 import UnFollowButton from './UnFollowButton';
-
-const images=[
-    {
-      imageID: 1, 
-      src: '../assets/img/1.jpg',
-      description : 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus egestas libero nec justo tincidunt, sit amet condimentum libero rhoncus. Nulla facilisi. Fusce commodo et velit quis consequat. Etiam nec lorem molestie, viverra justo sed, sagittis lorem. In hac habitasse platea dictumst. Duis venenatis, lorem vitae sollicitudin cursus, ipsum justo facilisis justo, quis semper nibh lacus ac erat. Nam viverra urna a ultrices sodales. Nunc in lectus quam. Vivamus viverra justo vehicula turpis pretium, at consectetur neque tristique. Suspendisse cursus nec ante nec pretium. Donec dui quam, sagittis in tellus eu, euismod viverra arcu. Sed faucibus blandit dui, eu pulvinar sem accumsan ac. Aenean lorem eros, venenatis sed suscipit non, ultrices ut ipsum. Sed in est non enim malesuada aliquam at id tortor. Maecenas nec dolor vestibulum, pulvinar purus eget, molestie nisi. Aliquam erat volutpat. Vivamus nec turpis sit amet lacus pellentesque semper. Nunc nec massa aliquet, laoreet sapien sit amet, mollis urna. Proin a nisl tortor. Ut nec eleifend metus. Curabitur rutrum magna ac orci varius faucibus. Sed scelerisque massa nec ante suscipit malesuada. Sed eu neque dolor. Suspendisse bibendum egestas augue quis venenatis. Nunc imperdiet lectus a nisi ornare cursus at vitae eros. Proin justo nunc, rutrum non nulla eget, tempor volutpat nisi. Praesent lobortis varius neque non rhoncus. Duis convallis feugiat magna eu fringilla. Nullam vestibulum felis iaculis, iaculis sapien eu, pretium nunc. Phasellus rutrum mi eget ligula iaculis ultrices. Praesent tristique mi risus, non feugiat sem iaculis at.'
-    },
-    {
-      imageID: 2, src: '../assets/img/2.jpg'
-    },
-    {
-      imageID: 3, src: '../assets/img/3.jpg'
-    },
-    {
-      imageID: 4, src: '../assets/img/4.jpg'
-    },
-    {
-      imageID: 5, src: '../assets/img/5.jpg'
-    },
-    {
-      imageID: 6, src: '../assets/img/6.jpg'
-    },
-    {
-      imageID: 7, src: '../assets/img/7.jpg'
-    },
-    {
-      imageID: 8, src: '../assets/img/8.jpg'
-    },
-    {
-      imageID: 9, src: '../assets/img/9.jpg'
-    },
-  ];
-  
-  const following = [
-    {
-      name: {
-        firstName  : 'Daylin',
-        lastName   : 'Mitchell'
-      },
-      email        : 'drantho@gmail.com',
-      joinDate     : '7/1/2018'
-    },
-    {
-      name: {
-        firstName  : 'Dustin',
-        lastName   : 'Mitchell'
-      },
-      email        : 'drantho@gmail.com',
-      joinDate     : '7/1/2018'
-    },
-    {
-      name: {
-        firstName  : 'Devin',
-        lastName   : 'Mitchell'
-      },
-      email        : 'drantho@gmail.com',
-      joinDate     : '7/1/2018'
-    },
-    {
-      name: {
-        firstName  : 'Sean',
-        lastName   : 'Mitchell'
-      },
-      email        : 'drantho@gmail.com',
-      joinDate     : '7/1/2018'
-    },
-    {
-      name: {
-        firstName  : 'Tate',
-        lastName   : 'Mitchell'
-      },
-      email        : 'drantho@gmail.com',
-      joinDate     : '7/1/2018'
-    }
-  ];
-  
-  const followers = [  
-    {
-      name: {
-        firstName  : 'Daylin',
-        lastName   : 'Mitchell'
-      },
-      email        : 'drantho@gmail.com',
-      joinDate     : '7/1/2018'
-    },
-    {
-      name: {
-        firstName  : 'Dustin',
-        lastName   : 'Mitchell'
-      },
-      email        : 'drantho@gmail.com',
-      joinDate     : '7/1/2018'
-    },
-    {
-      name: {
-        firstName  : 'Devin',
-        lastName   : 'Mitchell'
-      },
-      email        : 'drantho@gmail.com',
-      joinDate     : '7/1/2018'
-    },
-    {
-      name: {
-        firstName  : 'Sean',
-        lastName   : 'Mitchell'
-      },
-      email        : 'drantho@gmail.com',
-      joinDate     : '7/1/2018'
-    },
-    {
-      name: {
-        firstName  : 'Tate',
-        lastName   : 'Mitchell'
-      },
-      email        : 'drantho@gmail.com',
-      joinDate     : '7/1/2018'
-    },
-    {
-      name: {
-        firstName  : 'Daylin',
-        lastName   : 'Mitchell'
-      },
-      email        : 'drantho@gmail.com',
-      joinDate     : '7/1/2018'
-    },
-    {
-      name: {
-        firstName  : 'Dustin',
-        lastName   : 'Mitchell'
-      },
-      email        : 'drantho@gmail.com',
-      joinDate     : '7/1/2018'
-    },
-    {
-      name: {
-        firstName  : 'Devin',
-        lastName   : 'Mitchell'
-      },
-      email        : 'drantho@gmail.com',
-      joinDate     : '7/1/2018'
-    },
-    {
-      name: {
-        firstName  : 'Sean',
-        lastName   : 'Mitchell'
-      },
-      email        : 'drantho@gmail.com',
-      joinDate     : '7/1/2018'
-    },
-    {
-      name: {
-        firstName  : 'Tate',
-        lastName   : 'Mitchell'
-      },
-      email        : 'drantho@gmail.com',
-      joinDate     : '7/1/2018'
-    }
-  ];
-  
+import { withRouter } from 'react-router-dom';
 
 function TabContainer({ children, dir }) {
     return (
@@ -248,12 +88,14 @@ class User extends React.Component {
             },
             following: false,
             disabled: true,
-            signedInUser: null 
+            signedInUser: {
+                isSignedUp: false
+            } 
         });
     
     }
 
-    componentDidMount(){
+    componentWillMount(){
     
         this.fillComponent();
     
@@ -279,11 +121,8 @@ class User extends React.Component {
         }).then(function (response) {
             return response.json();
         }).then(function (data) {
-            console.log('search successful.');
-            console.log(data);
-            this.setState({
-                user: data
-            });
+
+            console.log('fetch 1 fires.');
 
             fetch('/api/getUser', {
                 method: 'POST',
@@ -293,32 +132,28 @@ class User extends React.Component {
                 },
             }).then(function (response2) {
                 return response2.json();
-            }).then(function (data2) {            
-                this.setState({following: this.isFollowing(data2), signedInUser: data2, disabled: !data2.isSignedUp});
-                console.log('data2');
-                console.log(data2);
+            }).then(function (data2) { 
+                
+                console.log('fetch2 fires.');
+                this.setState({user: data, following: this.isFollowing(data, data2), signedInUser: data2, disabled: !data2.isSignedUp});                
+
+                console.log('User this.state');
+                console.log(this.state);
+                console.log('=====================================');
+
             }.bind(this));
 
         }.bind(this));
-
-        console.log('Setting Following: ');
-
-        console.log('fillComponent fires');
     }
 
-    isFollowing = (user) =>{
+    isFollowing = (userToFollow, userFollowing) =>{
 
         
         console.log('isFollowing() fires');
         
-        if(user.following){
-            console.log('user.following: ');
-            console.log(user.following);
-            for(let i=0; i<user.following.length; i++){
-                console.log('testing: ');
-                console.log(user.following[i]._id + ' = ' + this.state.user._id);
-                if(user.following[i]._id == this.state.user._id){
-                    console.log('returning true');
+        if(userFollowing.following){
+            for(let i=0; i<userFollowing.following.length; i++){                
+                if(userFollowing.following[i]._id.toString() === userToFollow._id.toString()){
                     return true;
                 }
             };
@@ -402,7 +237,7 @@ class User extends React.Component {
 
                     <h1 className='pageTitle'>{this.state.user.local.userName.username}</h1>
                     <span style={{width: 40}}>
-                        <Avatar style={{verticalAlign: 'middle', marginRight: 10}} src="../assets/img/user1.jpg" />
+                        <Avatar style={{verticalAlign: 'middle', marginRight: 10}} src="/img/user1.jpg" />
                     </span>
                     <span style={{width: 200}}>
                         <strong>Name:</strong>{this.state.user.local.firstName.firstName + ' ' + this.state.user.local.lastName.lastName}<br/>  
@@ -472,20 +307,8 @@ class User extends React.Component {
                 </TabContainer>
                 <TabContainer dir={theme.direction}>
 
-                    <Masonry
-                        className={'galleryClass'} // default '' 
-                        disableImagesLoaded={false} // default false
-                        updateOnEachImageLoad={false} // default false and works only if disableImagesLoaded is false
-                        style={{marginLeft: -30}}
-                    >
-        
-                        {
-                            this.state.user.Mints.map(function(item, i){            
-                                return <Mint key={i} src={item.src} mintId={item._id}/>
-                            })
-                        }
-
-                    </Masonry>
+                    <MintList Mints={this.state.user.Mints} signedInUser={this.state.signedInUser}/>
+                    
                 </TabContainer>
             </SwipeableViews>
         </div>
@@ -498,4 +321,4 @@ User.propTypes = {
     theme: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles, { withTheme: true })(User);
+export default withRouter(withStyles(styles, { withTheme: true })(User));

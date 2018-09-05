@@ -19,8 +19,6 @@ const styles = theme => ({
     
 });
 
-const links = ['Profile', 'All Mints', 'Browse Users'];
-
 class MenuDrawer extends React.Component {
 
     state={
@@ -34,7 +32,6 @@ class MenuDrawer extends React.Component {
     };
 
     render() {
-        const { classes } = this.props;
 
         return (
             <div>

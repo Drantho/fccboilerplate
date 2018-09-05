@@ -229,7 +229,7 @@ app.post('/api/SignIn', passport.authenticate('local-login', {
 
 app.get('/api/SignInSuccess', (req, res) => {
     console.log('Sign In success');
-    res.send({'signedUp': true})
+    res.send({signedInUser: req.user, 'signedUp': true})
 });
 
 app.get('/api/SignInFail', (req, res) => {
@@ -348,6 +348,19 @@ app.post('/api/GetMint', (req, res) => {
         res.json(result[0]);
     });
 
+});
+
+app.post('/api/ReMint', (req, res) => {
+
+    User.findByIdAndUpdate(req.user._id, { $push: {Mints: req.body.mint }}, (errUpdate, resultUpdate) => {
+        if(errUpdate){
+            console.log(errUpdate);
+             res.sendStatus(500);
+        }
+
+        res.json(resultUpdate);
+    });
+       
 });
 
 //=============================================================================================================================
