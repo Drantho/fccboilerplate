@@ -116,7 +116,7 @@ app.post('/api/SearchUser', (req, res) => {
 app.post('/api/FollowUser', (req, res) => { 
     
     console.log('/api/followUser() fires.');
-    var newUser = new User();
+    let newUser = new User();
 
     User.findById(req.body.userId, (errFinding, userToFollow) =>{
         if(errFinding)
@@ -129,7 +129,7 @@ app.post('/api/FollowUser', (req, res) => {
 
         User.findByIdAndUpdate(req.user._id, {
             $push: {
-                following: userToFollow
+                following: trimUser(userToFollow)
             }
         }, {
             safe: true
@@ -142,7 +142,10 @@ app.post('/api/FollowUser', (req, res) => {
             }
 
             //Add signed in user to follower list
-            User.findByIdAndUpdate(req.body.userId, {$push:{followers: req.user}}, (errAddFollower, addFollowerResult) => {
+            User.findByIdAndUpdate(req.body.userId, {
+                $push:{
+                    followers: trimUser(req.user)}
+                }, (errAddFollower, addFollowerResult) => {
                 if(errAddFollower){
                     console.log(errAddFollower);
                 }
@@ -219,6 +222,17 @@ app.post('/api/UnFollowUser', (req, res) => {
     
 
 });
+
+trimUser = (user) =>{
+
+    let trimmedUser = {
+        '_id': user._id,
+        'local': user.local 
+    }
+
+    return trimmedUser;
+
+}
 
 //===============================================================================================================================
 
@@ -352,16 +366,26 @@ app.post('/api/GetMint', (req, res) => {
 
 app.post('/api/ReMint', (req, res) => {
 
-    User.findByIdAndUpdate(req.user._id, { $push: {Mints: req.body.mint }}, (errUpdate, resultUpdate) => {
+    User.findByIdAndUpdate(req.user._id, {
+        $push: {
+            Mints: trimMint(req.body.mint, req.user._id) }
+        }, (errUpdate, resultUpdate) => {
         if(errUpdate){
             console.log(errUpdate);
-             res.sendStatus(500);
+            res.sendStatus(500);
         }
 
         res.json(resultUpdate);
     });
        
 });
+
+trimMint = (mint, userId) => {
+    
+    mint._id=ObjectId();
+    mint.owner=userId.toString();
+    return mint;
+}
 
 //=============================================================================================================================
 

@@ -23,10 +23,30 @@ const styles = (theme) => ({
 });
 
 class MenuAppBar extends React.Component {
-    state = {
-        auth: true,
-        anchorEl: null,
-    };
+
+    constructor(){
+        super();
+        this.state = {
+            auth: false,
+            anchorEl: null
+        };        
+    }
+
+    componentDidMount = () =>{
+        fetch('/api/GetUser/', 
+            {
+                method: 'POST',
+                headers: 
+                {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            }).then(function(response) {
+                return response.json();
+            }).then(function(data) {                
+                this.setState({auth: data.isSignedUp});
+            }.bind(this));
+    }
 
     render() {
         const { classes } = this.props;
@@ -37,7 +57,9 @@ class MenuAppBar extends React.Component {
                 <AppBar className={classes.appBar} position="fixed">
                     <Toolbar>                        
                         <div >
-                            <img src='/img/logo-white.png' alt='logo' style={{marginLeft: 0, height: 50, paddingTop: 10, paddingBottom: 10}}/>
+                            <Link to="/" className="buttonAppBarLink">
+                                <img src='/img/logo-white.png' alt='logo' style={{marginLeft: 0, height: 50, paddingTop: 10, paddingBottom: 10}}/>
+                            </Link>
                         </div>
                         {auth && (
                             <div style={{position: 'absolute', right: 0, marginRight: 25}}>  
@@ -70,7 +92,33 @@ class MenuAppBar extends React.Component {
                             </div>
                         )}
                         {!auth && (
-                            <div>
+                            <div style={{position: 'absolute', right: 0, marginRight: 25}}>
+                                <Toolbar className={classes.toolBar}>  
+                                    <Link to="/SignIn" className="buttonAppBarLink">
+                                        <Button className={classes.button}>
+                                            <h3>Sign In</h3>
+                                        </Button>
+                                    </Link>
+                                </Toolbar>
+                                <Toolbar className={classes.toolBar}>  
+                                    <Link to="/SignUp" className="buttonAppBarLink">
+                                        <Button className={classes.button}>
+                                            <h3>Sign Up</h3>
+                                        </Button>
+                                    </Link>
+                                </Toolbar>
+                                <Toolbar className={classes.toolBar}>  
+                                    <Link to="/" className="buttonAppBarLink">
+                                        <Button className={classes.button}>
+                                            <h3>All Mints</h3>
+                                        </Button>
+                                    </Link>
+                                </Toolbar>
+                                <Toolbar className={classes.toolBar}>  
+                                    <Button className={classes.button}>
+                                        <h3>Browse Users</h3>
+                                    </Button>
+                                </Toolbar>
                             </div>
                         )}
                     </Toolbar>

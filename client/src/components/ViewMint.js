@@ -11,6 +11,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import CloseIcon from '@material-ui/icons/Close';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Modal from '@material-ui/core/Modal';
@@ -42,7 +43,7 @@ const styles = theme => ({
     },
 });
 
-class RecipeReviewCard extends React.Component {
+class ViewMint extends React.Component {
     constructor(props){
         super(props);
         this.state = { 
@@ -60,9 +61,6 @@ class RecipeReviewCard extends React.Component {
     }
 
     componentDidMount(){
-        console.log('viewmint this.props');
-        console.log(this.props);
-        console.log('searching mint ' + this.props.match.params.mintId);
         fetch('/api/GetMint', {
             method: 'POST',
             headers: {
@@ -75,8 +73,6 @@ class RecipeReviewCard extends React.Component {
         }).then(function (response) {
             return response.json();
         }).then(function (data) {
-            console.log('search successful.');
-            console.log(data);
             this.setState({
                 mint: data
             });
@@ -110,16 +106,19 @@ class RecipeReviewCard extends React.Component {
     const open = Boolean(anchorEl);
     
       
-      function getModalStyle() {
+    function getModalStyle() {
         const top = 50;
         const left = 50;
       
         return {
-          top: `${top}%`,
-          left: `${left}%`,
-          transform: `translate(-${top}%, -${left}%)`,
+            top: `${top}%`,
+            left: `${left}%`,
+            transform: `translate(-${top}%, -${left}%)`,
+            maxHeight: '95%',
+            maxWidth: '95%',
+            overflow: 'scroll' 
         };
-      }
+    }
 
     return (
         <div className={classes.galleryClass}>
@@ -166,6 +165,9 @@ class RecipeReviewCard extends React.Component {
                     onClose={this.handleModalClose}
                 >
                     <div style={getModalStyle()} className={classes.paper}>
+                        <IconButton onClick={this.handleModalClose} style={{'position': 'absolute', 'top': 0, 'left': 0, 'z-index': 10, 'backgroundColor': 'rgba(0,0,0, 0.4)'}}>
+                            <CloseIcon style={{'color': 'white'}}/>
+                        </IconButton>
                         <img alt='full size' src={this.state.mint.src}/>
                     </div>
                 </Modal>
@@ -202,8 +204,8 @@ class RecipeReviewCard extends React.Component {
   }
 }
 
-RecipeReviewCard.propTypes = {
-  classes: PropTypes.object.isRequired,
+ViewMint.propTypes = {
+    classes: PropTypes.object.isRequired,
 };
 
-export default withRouter(withStyles(styles)(RecipeReviewCard));
+export default withRouter(withStyles(styles)(ViewMint));

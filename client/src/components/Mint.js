@@ -15,11 +15,11 @@ library.add(faUser, faEllipsisV)
 
 const styles = theme => ({
     galleryClass: {
-      width: 343,
-      marginTop: 15,
-      marginLeft: 30,
-      marginRight: 0, 
-      marginBottom: 15,     
+        width: 343,
+        marginTop: 15,
+        marginLeft: 30,
+        marginRight: 0, 
+        marginBottom: 15,     
     },
     container: {
         paddingTop: 15,
@@ -32,7 +32,7 @@ const styles = theme => ({
         marginLeft: -10,
         marginRight: -15
     }
-  });
+});
 
 class Mint extends React.Component {
     state = {
@@ -50,6 +50,17 @@ class Mint extends React.Component {
 
     componentDidMount = () => {
 
+        this.setMintButton();
+
+    }
+
+    componentWillReceiveProps = () =>{
+
+        this.setMintButton();
+
+    }
+
+    setMintButton = () => {
         let mintFound = false;
 
         let mintList = this.props.signedInUser.Mints;
@@ -62,8 +73,8 @@ class Mint extends React.Component {
         if(this.props.signedInUser.isSignedUp){
             console.log('issignedup == true');
             for(let i=0; i<mintList.length; i++){
-                console.log('testing ' + mintList[i]._id + ' == ' + this.props.mintId);
-                if(mintList[i]._id.toString() == this.props.mintId.toString()){
+                console.log('testing ' + mintList[i].src + ' == ' + this.props.src);
+                if(mintList[i].src == this.props.src){
                     console.log('mint found')
                     mintFound = true;
                     break;
@@ -79,10 +90,10 @@ class Mint extends React.Component {
         console.log('setting state to ' + mintFound);
         console.log('================================================');
         this.setState({minted: mintFound});
-
     }
 
     handleMint = () => {
+        let self = this;
         fetch('/api/ReMint/', 
             {
                 method: 'POST',
@@ -96,14 +107,17 @@ class Mint extends React.Component {
                         title: this.props.title,
                         link: this.props.link,
                         src: this.props.src,
-                        description: this.props.description
+                        description: this.props.description,                        
+                        _id: {
+                            $oid: this.props._id
+                        }
                     }
                 })
             }).then(function(response) {
                 return response.json();
             }).then(function(data) {
                 console.log(data);
-                //this.setState({showLastName: !this.state.showLastName});
+                self.setState({minted: true});
             });
     }
     
@@ -125,7 +139,7 @@ class Mint extends React.Component {
 
                     { 
                         !this.state.minted ? 
-                        <IconButton aria-label="Add to favorites"> 
+                        <IconButton onClick={this.handleMint} aria-label="Add to favorites"> 
                             <img alt='logo' src='/img/leaf.png' style={{width: '45%'}}/> 
                         </IconButton> 
                         : 
@@ -161,9 +175,9 @@ class Mint extends React.Component {
                         open={open}
                         onClose={this.handleClose}
                 >
-                        <MenuItem onClick={this.handleClose}>Mint It!</MenuItem>
-                        <Link to={'/ViewMint/' + this.props.mintId}><MenuItem >View Mint</MenuItem></Link>
-                        <Link to={'/User/' + this.props.owner}><MenuItem >View User</MenuItem></Link>
+                        { !this.state.minted ? <MenuItem onClick={this.handleMint}>Mint It!</MenuItem> : null}
+                        <Link to={'/ViewMint/' + this.props.mintId} className='buttonAppBarLink'><MenuItem>View Mint</MenuItem></Link>
+                        <Link to={'/User/' + this.props.owner} className='buttonAppBarLink'><MenuItem>View User</MenuItem></Link>
                         <MenuItem onClick={this.handleClose}>Not Interested</MenuItem>
                         <MenuItem onClick={this.handleClose}>Report Spam</MenuItem>
                         <MenuItem onClick={this.handleClose}>Report Inappropriate</MenuItem>

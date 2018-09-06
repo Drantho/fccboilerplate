@@ -433,6 +433,7 @@ class User extends React.Component {
                     <TabContainer dir={theme.direction}>
   
                         <MintList Mints={this.state.Mints} signedInUser={this.state.signedInUser}/>
+                        
                     </TabContainer>
                 </SwipeableViews>
             </div>
