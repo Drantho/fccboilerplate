@@ -22,7 +22,7 @@ class MintList extends React.Component {
         
         {        
           this.props.Mints.map(function(item, i){            
-            return <Mint key={i} src={item.src} owner={item.owner} signedInUser={this.props.signedInUser} mintId={item._id}/>
+            return <Mint key={i} title={item.title} inappropriate={item.inappropriate} spam={item.spam} src={item.src} owner={item.owner} signedInUser={this.props.signedInUser} mintId={item._id}/>
           },this)
         }
         </Masonry>

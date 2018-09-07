@@ -380,6 +380,32 @@ app.post('/api/ReMint', (req, res) => {
        
 });
 
+app.post('/api/ReportSpam', (req, res) => {
+    User.findOneAndUpdate({'Mints._id': ObjectId(req.body.Mint._id)}, {'$set' : {'Mints.$.spam': true} }, (err, result) => {
+         if(err){
+            console.log(err);
+        }
+
+        console.log('Mint reported spam');
+        console.log(result);
+        console.log('=================================');
+        res.send(result);
+    });
+});
+
+app.post('/api/ReportInappropriate', (req, res) => {
+    User.findOneAndUpdate({'Mints._id': ObjectId(req.body.Mint._id)}, {'$set' : {'Mints.$.inappropriate': true} }, (err, result) => {
+         if(err){
+            console.log(err);
+        }
+
+        console.log('Mint reported inappropriate');
+        console.log(result);
+        console.log('=================================');
+        res.send(result);
+    });
+});
+
 trimMint = (mint, userId) => {
     
     mint._id=ObjectId();

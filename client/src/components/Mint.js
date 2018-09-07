@@ -35,10 +35,16 @@ const styles = theme => ({
 });
 
 class Mint extends React.Component {
-    state = {
-        anchorEl: null,   
-        minted: true     
-    };
+
+    constructor(props){
+        super(props);
+        this.state = {
+            anchorEl: null,   
+            minted: true,
+            spam: props.spam,
+            inappropriate: props.inappropriate     
+        };
+    }
 
     handleMenu = event => {
         this.setState({ anchorEl: event.currentTarget });
@@ -107,10 +113,7 @@ class Mint extends React.Component {
                         title: this.props.title,
                         link: this.props.link,
                         src: this.props.src,
-                        description: this.props.description,                        
-                        _id: {
-                            $oid: this.props._id
-                        }
+                        description: this.props.description
                     }
                 })
             }).then(function(response) {
@@ -118,6 +121,54 @@ class Mint extends React.Component {
             }).then(function(data) {
                 console.log(data);
                 self.setState({minted: true});
+            });
+    }
+
+    handleReportSpam = () =>{
+        let self = this;
+        fetch('/api/ReportSpam/', 
+            {
+                method: 'POST',
+                headers: 
+                {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    Mint: {
+                        owner: this.props.owner,                  
+                        _id: this.props.mintId
+                    }
+                })
+            }).then(function(response) {
+                return response.json();
+            }).then(function(data) {
+                console.log('setting spam to true');
+                self.setState({spam: true});
+            });
+    }
+
+    handleReportInappropriate = () =>{
+        let self = this;
+        fetch('/api/ReportInappropriate/', 
+            {
+                method: 'POST',
+                headers: 
+                {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    Mint: {
+                        owner: this.props.owner,                  
+                        _id: this.props.mintId
+                    }
+                })
+            }).then(function(response) {
+                return response.json();
+            }).then(function(data) {
+                console.log('setting inappropriate to true');
+                self.setState({inappropriate: true});
             });
     }
     
@@ -128,10 +179,18 @@ class Mint extends React.Component {
 
         return (
             <div className={classes.galleryClass}>
-                <Card className={classes.container} elevation={10}>                 
+                <Card className={classes.container} elevation={10}> 
+                    {(this.state.spam || this.state.inappropriate) ?
+                        <h3>* Title Hidden *</h3> : 
+                        <h3>{this.props.title}</h3>                
+                    }
 
-                    <Link to={'/ViewMint/' + this.props.mintId}>          
-                        <img alt={this.props.title} className="mint" src={this.props.src} />
+                    <Link to={'/ViewMint/' + this.props.mintId}> 
+                        {(this.state.spam || this.state.inappropriate) ?         
+                            <h4>This mint has been reported.<br/>View anyway.</h4>
+                            :                            
+                            <img alt={this.props.title} className="mint" src={this.props.src} />
+                        }
                     </Link>
 
                     <CardActions className={classes.actions} disableActionSpacing>
@@ -179,8 +238,8 @@ class Mint extends React.Component {
                         <Link to={'/ViewMint/' + this.props.mintId} className='buttonAppBarLink'><MenuItem>View Mint</MenuItem></Link>
                         <Link to={'/User/' + this.props.owner} className='buttonAppBarLink'><MenuItem>View User</MenuItem></Link>
                         <MenuItem onClick={this.handleClose}>Not Interested</MenuItem>
-                        <MenuItem onClick={this.handleClose}>Report Spam</MenuItem>
-                        <MenuItem onClick={this.handleClose}>Report Inappropriate</MenuItem>
+                        <MenuItem onClick={this.handleReportSpam}>Report Spam</MenuItem>
+                        <MenuItem onClick={this.handleReportInappropriate}>Report Inappropriate</MenuItem>
                     </Menu>
 
                 </Card>
