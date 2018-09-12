@@ -33,6 +33,7 @@ class MenuAppBar extends React.Component {
     }
 
     componentDidMount = () =>{
+        console.log('ButtonAppBar componentDidMount fires')
         fetch('/api/GetUser/', 
             {
                 method: 'POST',
@@ -68,6 +69,13 @@ class MenuAppBar extends React.Component {
                                     <Link to="/Profile" className="buttonAppBarLink">
                                         <Button className={classes.button}>
                                             <h3>Profile</h3>
+                                        </Button>
+                                    </Link>
+                                </Toolbar>
+                                <Toolbar className={classes.toolBar}>  
+                                    <Link to="/NewMint" className="buttonAppBarLink">
+                                        <Button className={classes.button}>
+                                            <h3>Add Mint</h3>
                                         </Button>
                                     </Link>
                                 </Toolbar>

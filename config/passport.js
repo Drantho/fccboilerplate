@@ -18,14 +18,14 @@ module.exports = function(passport) {
     // used to serialize the user for the session
     passport.serializeUser(function(user, done) {
         
-        console.log('serializeUser fires.');
-        console.log(user)
+        //console.log('serializeUser fires.');
+        //console.log(user)
         done(null, user._id);
     });
 
     // used to deserialize the user
     passport.deserializeUser(function(id, done) {
-        console.log('deserializeUser fires ' + id);
+        //console.log('deserializeUser fires ' + id);
         User.findById(id, function(err, user) {
             done(err, user);
         });
@@ -45,13 +45,13 @@ module.exports = function(passport) {
     },
     function(req, email, password, done) {
 
-        console.log('local-signup() firing.');
-        console.log(req.body);
+        //console.log('local-signup() firing.');
+        //console.log(req.body);
 		// find a user whose email is the same as the forms email
 		// we are checking to see if the user trying to login already exists
         User.findOne({$or:[{ 'local.email.email' :  email },{'local.userName.userName': req.body.userName}]}, function(err, user) {
             // if there are any errors, return the error
-            console.log('User.findOne() firing.');
+            //console.log('User.findOne() firing.');
             if (err){
                 console.log(err);
                 return done(err);
@@ -59,11 +59,11 @@ module.exports = function(passport) {
 
             // check to see if theres already a user with that email
             if (user) {
-                console.log('user found.');
+                //console.log('user found.');
                 return done(null, false, req.flash('signUpMessage', 'That email/user name is already taken.'));
             } else {
 
-                console.log('creating new user.');
+                //console.log('creating new user.');
 				// if there is no user with that email
                 // create the user
                 var newUser            = new User();
@@ -89,7 +89,7 @@ module.exports = function(passport) {
                         console.log(err)
                         throw err;
                     }
-                    console.log('user saved.');
+                    //console.log('user saved.');
                     return done(null, newUser);
                 });
             }
@@ -115,10 +115,10 @@ module.exports = function(passport) {
         // we are checking to see if the user trying to login already exists
         User.findOne({ 'local.userName.userName' :  userName }, function(err, user) {
             // if there are any errors, return the error before anything else
-          console.log('connected to database');
-          console.log(user);
+            //console.log('connected to database');
+            //console.log(user);
             if (err){
-              return done(err);
+                return done(err);
             }
                 
                 
@@ -131,7 +131,7 @@ module.exports = function(passport) {
 
             // if the user is found but the password is wrong
             if (!user.validPassword(password)){
-              return done(null, false, req.flash('signUpMessage', 'Oops! Wrong password.')); // create the loginMessage and save it to session as flashdata                
+                return done(null, false, req.flash('signUpMessage', 'Oops! Wrong password.')); // create the loginMessage and save it to session as flashdata                
             }
                       
           

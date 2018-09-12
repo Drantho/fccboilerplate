@@ -42,7 +42,7 @@ class Home extends React.Component {
         }).then(function(data) {
             
 
-            fetch('/api/GetUser/', 
+            fetch('/api/GetMintedUser/', 
             {
                 method: 'POST',
                 headers: 
@@ -54,7 +54,7 @@ class Home extends React.Component {
                 return response.json();
             }).then(function(data2) {
 
-                this.setState({Mints: data[0].Mints, signedInUser: data2});      
+                this.setState({Mints: data.Mints, signedInUser: data2});      
                 console.log('Home state: ');
                 console.log(this.state);
                 console.log('===========================================')          

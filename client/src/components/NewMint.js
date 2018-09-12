@@ -53,6 +53,22 @@ class NewMint extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
+    componentDidMount(){
+        fetch('/api/GetUser', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        }).then(function(response) {
+            return response.json();
+        }).then(function(data) {
+            if(!data.isSignedUp){
+                this.props.history.push('/SignIn');
+            }            
+        }.bind(this));
+    }
+
     handleChangeTitle (event){
         this.setState({title: event.target.value});
     }
@@ -70,6 +86,7 @@ class NewMint extends React.Component {
     }
 
     handleSubmit (){
+
         fetch('/api/AddMint', {
             method: 'POST',
             headers: {
@@ -79,10 +96,10 @@ class NewMint extends React.Component {
             body: JSON.stringify(this.state)
         }).then(function(response) {
             return response.json();
-        }).then(function(data) {
-            //self.setState({user: data});
+        }).then(function(data) {            
             console.log(data.message);
-        });
+            this.props.history.push('/profile');
+        }.bind(this));
     }
     
 

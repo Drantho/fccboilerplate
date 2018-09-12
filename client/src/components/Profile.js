@@ -108,14 +108,16 @@ class User extends React.Component {
         console.log(this.props);
         console.log('====================================================');
 
-        fetch('/api/getUser', 
+        fetch('/api/getMintedUser', 
             {
-                method: 'GET',
-                
+                method: 'POST',
             }).then(function(response) {
                 return response.json();
             }).then(function(data) {
                 if(data.isSignedUp){
+                    console.log('data');
+                    console.log(data);
+                    console.log('-----------------------------');
                     this.setState({
                         userName: data.local.userName.userName,
                         showUserName: data.local.userName.public,
@@ -134,6 +136,9 @@ class User extends React.Component {
                         signedInUser: data,
                         value: 0
                     });
+                    console.log('Profile state')
+                    console.log(this.state);
+                    console.log('=================================');
                 }
                 else{
                     this.props.history.push('/SignIn');                    

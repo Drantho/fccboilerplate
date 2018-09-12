@@ -56,11 +56,14 @@ class ViewMint extends React.Component {
                 link: '',
                 description: '',
                 categories: []
-            } 
+            },   
+            minted: true,
+            signedInUser: {} 
         };
     }
 
     componentDidMount(){
+        
         fetch('/api/GetMint', {
             method: 'POST',
             headers: {
@@ -72,13 +75,71 @@ class ViewMint extends React.Component {
             })
         }).then(function (response) {
             return response.json();
-        }).then(function (data) {
-            this.setState({
-                mint: data
-            });
+        }).then(function (pageMint) {
+
+
+            fetch('/api/GetMintedUser', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            }).then(function (response2) {
+                return response2.json();
+            }).then(function (signedInUser) {
+
+                this.setState({
+                    mint: pageMint,
+                    signedInUser: signedInUser,
+                    minted: this.setMinted(pageMint._id, signedInUser)
+                });
+
+            }.bind(this));
+
         }.bind(this));
     
     }    
+
+    handleMint = () => {
+        fetch('/api/ReMint/', 
+            {
+                method: 'POST',
+                headers: 
+                {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    mint: {
+                        title: this.state.mint.title,
+                        link: this.state.mint.link,
+                        src: this.state.mint.src,
+                        description: this.state.mint.description
+                    }
+                })
+            }).then(function(response) {
+                return response.json();
+            }).then(function(data) {
+                console.log(data);
+                this.setState({minted: true});
+            }.bind(this));
+    }
+
+    setMinted = (mintId, signedInUser) => {
+        
+        if(signedInUser.isSignedUp){
+
+            for(let i=0; i<signedInUser.Mints.length; i++){
+                if(signedInUser.Mints[i]._id.toString() == mintId ){
+                    return true;
+                }
+            }
+            return false;
+
+        }
+        return true;
+        
+    }
 
     handleMenu = event => {
         this.setState({ anchorEl: event.currentTarget });
@@ -143,9 +204,19 @@ class ViewMint extends React.Component {
                 </ButtonBase>
                 
                 <CardActions className={classes.actions} disableActionSpacing>
-                    <IconButton aria-label="Add to favorites">
+
+                {
+                    !this.state.minted ? 
+                    <IconButton onClick={this.handleMint} aria-label="Add to favorites">
                         <img alt='logo' src='/img/leaf.png' style={{height: 20}}/>
-                    </IconButton>
+                    </IconButton> 
+                    : 
+                    <IconButton disabled aria-label="Add to favorites">
+                        <img alt='logo' src='/img/leaf-gray.png' style={{height: 20}}/>
+                    </IconButton> 
+                }
+                    
+
                     <IconButton
                         className={classnames(classes.expand, {
                             [classes.expandOpen]: this.state.expanded,
@@ -165,7 +236,7 @@ class ViewMint extends React.Component {
                     onClose={this.handleModalClose}
                 >
                     <div style={getModalStyle()} className={classes.paper}>
-                        <IconButton onClick={this.handleModalClose} style={{'position': 'absolute', 'top': 0, 'left': 0, 'z-index': 10, 'backgroundColor': 'rgba(0,0,0, 0.4)'}}>
+                        <IconButton onClick={this.handleModalClose} style={{'position': 'absolute', 'top': 0, 'left': 0, 'zIndex': 10, 'backgroundColor': 'rgba(0,0,0, 0.4)'}}>
                             <CloseIcon style={{'color': 'white'}}/>
                         </IconButton>
                         <img alt='full size' src={this.state.mint.src}/>

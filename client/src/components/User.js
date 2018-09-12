@@ -123,8 +123,10 @@ class User extends React.Component {
         }).then(function (data) {
 
             console.log('fetch 1 fires.');
+            console.log(data);
+            console.log('===================================');
 
-            fetch('/api/getUser', {
+            fetch('/api/getMintedUser', {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -135,6 +137,9 @@ class User extends React.Component {
             }).then(function (data2) { 
                 
                 console.log('fetch2 fires.');
+                console.log(data2);
+                console.log('==================================');
+
                 this.setState({user: data, following: this.isFollowing(data, data2), signedInUser: data2, disabled: !data2.isSignedUp});                
 
                 console.log('User this.state');

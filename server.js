@@ -13,6 +13,7 @@ const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 const User = require('./config/models/User');
+const Mint = require('./config/models/Mint');
 
 require('./config/passport')(passport);
 
@@ -43,12 +44,6 @@ const port = process.env.PORT || 5000;
 
 // API calls
 
-app.post('/api/hello', (req, res) => {
-    res.send({
-        express: 'Hello From Express'
-    });
-});
-
 ///=====================================================================================================================
 
 app.get('/api/getUser', (req, res) => {
@@ -57,8 +52,8 @@ app.get('/api/getUser', (req, res) => {
     console.log('-----------------------------')
     if (req.user) {
         try{
-            res.json(req.user);
-            console.log('res.json success')
+            console.log('res.json success');
+            //res.json(req.user);
             return;
         }
         catch(err){
@@ -74,20 +69,14 @@ app.get('/api/getUser', (req, res) => {
 });
 
 app.post('/api/getUser', (req, res) => {
-    console.log('getUser fires');
-    console.log(req.user);
-    console.log('-----------------------------')
+    console.log('POST: getUser fires');
     if (req.user) {
-        try{
-            res.json(req.user);
-            console.log('res.json success')
-            return;
+        console.log('req.user exists');
+       if(req.user){         
+           console.log('==================================================');  
+           res.json(req.user);  
+           return;
         }
-        catch(err){
-            console.log('res.json error');
-            res.sendStatus(200);
-        }
-        
     }
 
     res.json({
@@ -95,9 +84,47 @@ app.post('/api/getUser', (req, res) => {
     });
 });
 
+app.post('/api/getMintedUser', (req, res) => {
+    console.log('POST: getMintedUser fires');
+
+    let user = {};
+
+    if(!req.user){
+        user = {'_id': ''};
+        res.json(user);
+    }else{
+    
+        user.local = req.user.local;
+        user.isSignedUp = req.user.isSignedUp;
+        user.showMints = req.user.showMints;
+        user.followers = req.user.followers;
+        user.following = req.user.following;
+        user._id = req.user._id;
+
+        console.log('Adding mints to user: ' + user);
+
+        Mint.find({'owner.id': req.user._id}, (err, result) => {
+            if(err){
+                console.log(err);
+            }
+
+            user.Mints = result.slice(0);
+
+            console.log('searching ' + user._id);
+            console.log('result');        
+            console.log(result);
+            console.log('========================================');
+            res.json(user);
+        });
+    }
+
+});
+
+
 app.post('/api/SearchUser', (req, res) => {
 
-    console.log(req.body);
+    console.log('searching user: ' + req.body.user);
+    let user = {};
 
     User.findById(req.body.user, (err, data) => {
         if (err) {
@@ -105,8 +132,26 @@ app.post('/api/SearchUser', (req, res) => {
             res.json(err);
         }
 
+        console.log('found user searching mints');
         console.log(data);
-        res.json(data);
+
+        user.local = data.local;
+        user.isSignedUp = data.isSignedUp;
+        user.showMints = data.showMints;
+        user.followers = data.followers;
+        user.following = data.following;
+        user._id = data._id;
+
+        Mint.find({'owner.id': data._id}, (err2, data2) => {
+            if(err2){
+                console.log(err2);
+            }
+            user.Mints = data2.slice(0);
+            res.json(user);
+
+        });
+
+        
     });
 
 });
@@ -243,7 +288,7 @@ app.post('/api/SignIn', passport.authenticate('local-login', {
 
 app.get('/api/SignInSuccess', (req, res) => {
     console.log('Sign In success');
-    res.send({signedInUser: req.user, 'signedUp': true})
+    res.send({signedInUser: req.user, 'signedUp': true, stuff: true})
 });
 
 app.get('/api/SignInFail', (req, res) => {
@@ -261,7 +306,7 @@ app.get('/api/SignInFail', (req, res) => {
 
 const ObjectId = require('mongodb').ObjectID;
 
-app.post('/api/AddMint', (req, res) => {
+app.post('/api/AddMintOld', (req, res) => {
 
     let newMint = {
 
@@ -299,7 +344,42 @@ app.post('/api/AddMint', (req, res) => {
 
 });
 
-app.post('/api/GetAllMints', (req, res) => {
+app.post('/api/AddMint', (req, res) => {
+
+    let ownerData = {};
+    ownerData.firstName = req.user.local.firstName;
+    ownerData.lastName = req.user.local.lastName;
+    ownerData.userName = req.user.local.userName;
+    ownerData.id = req.user._id;
+
+    let mint = new Mint({
+        
+        title: req.body.title,
+        src: req.body.href,
+        link: req.body.href,
+        description: req.body.description,
+        categories: [],
+        owner: ownerData,
+        group: '',        
+
+    });
+
+    mint.save((err) => {
+        if(err){
+            console.log(err);
+        }
+
+        console.log('Mint added successfully');
+        res.json({
+            message: 'Mint added successfully'
+        });
+    });
+
+        
+
+});
+
+app.post('/api/GetAllMintsOld', (req, res) => {
 
     User.aggregate([{
             $unwind: "$Mints"
@@ -327,7 +407,50 @@ app.post('/api/GetAllMints', (req, res) => {
 
 });
 
-app.post('/api/GetMint', (req, res) => {
+app.post('/api/GetAllMints', (req, res) => {
+
+    Mint.find({}, (err, result) => {
+        if(err){
+            console.log(err);
+        }
+
+        console.log('new get all mints');
+        console.log(result);
+        console.log('========================');
+        res.json({Mints: result});
+    });
+
+});
+
+app.post('/api/GetDistinctMints', (req, res) => {
+
+    Mint.aggregate([
+        {
+            "$group": {
+                "_id": "$src",
+                "id": { "$addToSet": "$_id" },
+                "src": { "$addToSet": "$src" },
+                "title": { "$addToSet": "$title" },
+                "link": { "$addToSet": "$link" },
+                "description": { "$addToSet": "$description" },
+                "categories": { "$addToSet": "$categories" },
+                "gallery": { "$addToSet": "$gallery" },                
+            }
+        }
+    ], (err, result) =>{
+        if(err){
+            console.log(err)
+        }
+
+        console.log('distinct src query');
+        console.log(result);
+        console.log('==================================');
+        res.json({Mints: result});
+    });
+
+});
+
+app.post('/api/GetMintOld', (req, res) => {
 
     User.aggregate([{
             $unwind: "$Mints"
@@ -364,23 +487,37 @@ app.post('/api/GetMint', (req, res) => {
 
 });
 
-app.post('/api/ReMint', (req, res) => {
-
-    User.findByIdAndUpdate(req.user._id, {
-        $push: {
-            Mints: trimMint(req.body.mint, req.user._id) }
-        }, (errUpdate, resultUpdate) => {
-        if(errUpdate){
-            console.log(errUpdate);
-            res.sendStatus(500);
+app.post('/api/GetMint', (req,res) => {
+    console.log('new find mint');
+    console.log('searching ' + req.body.mint);
+    Mint.findById(req.body.mint, (err, result) => {
+        if(err){
+            console.log(err);
         }
 
-        res.json(resultUpdate);
+        
+        console.log(result);
+        console.log('==========================');
+        res.json(result);
+    });
+});
+
+app.post('/api/ReMint', (req, res) => {
+
+    let mint = new Mint(trimMint(req.body.mint, req.user));
+
+    mint.save((err) => {
+        if(err){
+            console.log(err);
+        }
+
+        res.json({"message": "Reminted successfully"});
     });
        
 });
 
-app.post('/api/ReportSpam', (req, res) => {
+
+app.post('/api/ReportSpamOld', (req, res) => {
     User.findOneAndUpdate({'Mints._id': ObjectId(req.body.Mint._id)}, {'$set' : {'Mints.$.spam': true} }, (err, result) => {
          if(err){
             console.log(err);
@@ -393,7 +530,20 @@ app.post('/api/ReportSpam', (req, res) => {
     });
 });
 
-app.post('/api/ReportInappropriate', (req, res) => {
+app.post('/api/ReportSpam', (req, res) => {
+    Mint.findByIdAndUpdate(ObjectId(req.body.Mint._id), {'spam': true} , (err, result) => {
+         if(err){
+            console.log(err);
+        }
+
+        console.log('Mint reported spam');
+        console.log(result);
+        console.log('=================================');
+        res.send(result);
+    });
+});
+
+app.post('/api/ReportInappropriateOld', (req, res) => {
     User.findOneAndUpdate({'Mints._id': ObjectId(req.body.Mint._id)}, {'$set' : {'Mints.$.inappropriate': true} }, (err, result) => {
          if(err){
             console.log(err);
@@ -406,10 +556,30 @@ app.post('/api/ReportInappropriate', (req, res) => {
     });
 });
 
-trimMint = (mint, userId) => {
+app.post('/api/ReportInappropriate', (req, res) => {
+    Mint.findByIdAndUpdate(ObjectId(req.body.Mint._id), {'inappropriate': true} , (err, result) => {
+        if(err){
+           console.log(err);
+        }
+
+        console.log('Mint reported spam');
+        console.log(result);
+        console.log('=================================');
+        res.send(result);
+   });
+});
+
+trimMint = (mint, user) => {
     
-    mint._id=ObjectId();
-    mint.owner=userId.toString();
+    mint.owner=user.local;
+    mint.owner.id=user._id;
+    mint.owner={
+        id: user._id,
+        firstName: user.local.firstName,
+        lastName: user.local.lastName,
+        userName: user.local.userName
+    }
+    mint.group='';
     return mint;
 }
 

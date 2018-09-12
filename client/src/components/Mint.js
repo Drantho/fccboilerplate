@@ -77,7 +77,7 @@ class Mint extends React.Component {
         console.log('this.props.signedInUser.isSignedUp ? ' + this.props.signedInUser.isSignedUp);
         
         if(this.props.signedInUser.isSignedUp){
-            console.log('issignedup == true');
+            console.log('isSignedUp == true');
             for(let i=0; i<mintList.length; i++){
                 console.log('testing ' + mintList[i].src + ' == ' + this.props.src);
                 if(mintList[i].src == this.props.src){
@@ -120,8 +120,8 @@ class Mint extends React.Component {
                 return response.json();
             }).then(function(data) {
                 console.log(data);
-                self.setState({minted: true});
-            });
+                this.setState({minted: true});
+            }.bind(this));
     }
 
     handleReportSpam = () =>{
@@ -236,7 +236,7 @@ class Mint extends React.Component {
                 >
                         { !this.state.minted ? <MenuItem onClick={this.handleMint}>Mint It!</MenuItem> : null}
                         <Link to={'/ViewMint/' + this.props.mintId} className='buttonAppBarLink'><MenuItem>View Mint</MenuItem></Link>
-                        <Link to={'/User/' + this.props.owner} className='buttonAppBarLink'><MenuItem>View User</MenuItem></Link>
+                        <Link to={'/User/' + this.props.owner.id} className='buttonAppBarLink'><MenuItem>View User</MenuItem></Link>
                         <MenuItem onClick={this.handleClose}>Not Interested</MenuItem>
                         <MenuItem onClick={this.handleReportSpam}>Report Spam</MenuItem>
                         <MenuItem onClick={this.handleReportInappropriate}>Report Inappropriate</MenuItem>
